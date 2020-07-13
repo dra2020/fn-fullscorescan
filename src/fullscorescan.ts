@@ -36,6 +36,8 @@ export class FsmFullScoreScan extends FSM.Fsm
   toProcess: any[][];
   fsmBuilds: Lambda.FsmInvoke[];
   force: boolean;
+  numberSkipped: number;
+  numberBuilt: number;
 
   constructor(env: Environment, force?: boolean)
   {
@@ -44,6 +46,8 @@ export class FsmFullScoreScan extends FSM.Fsm
     this.toProcess = [];
     this.fsmBuilds = [];
     this.force = force;
+    this.numberSkipped = 0;
+    this.numberBuilt = 0;
   }
 
   get env(): Environment { return this._env as Environment; }
@@ -51,8 +55,14 @@ export class FsmFullScoreScan extends FSM.Fsm
   next(): void
   {
     // Print out result of last set
-    this.fsmBuilds.forEach((i) =>
-      { if (i.result && i.result.chatters) i.result.chatters.forEach((s: string) => { this.env.log.chatter(s) }) });
+    this.fsmBuilds.forEach((i) => {
+        if (i.result && i.result.chatters)
+          i.result.chatters.forEach((s: string) => { this.env.log.chatter(s) })
+        if (i.result && i.result.numberSkipped !== undefined)
+          this.numberSkipped += i.result.numberSkipped;
+        if (i.result && i.result.numberBuilt !== undefined)
+          this.numberBuilt += i.result.numberBuilt;
+      });
 
     // Now invoke this set
     this.fsmBuilds = [];
@@ -64,7 +74,10 @@ export class FsmFullScoreScan extends FSM.Fsm
 
     // If nothing added, we are done.
     if (this.fsmBuilds.length == 0)
+    {
+      this.env.log.chatter(`fullscorescan: ${this.numberBuilt} maps scored, ${this.numberSkipped} maps skipped`);
       this.setState(FSM.FSM_DONE);
+    }
     else
     {
       this.waitOn(this.fsmBuilds);
