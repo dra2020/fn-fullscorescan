@@ -19,7 +19,7 @@ const FSM_QUERYING = UniqueState++;
 const FSM_PROCESSING = UniqueState++;
 const FSM_BUILDING = UniqueState++;
 
-const ScoreVersion = '1';
+const ScoreVersion = '2';
 const MaxInParallel = 400;
 
 function NeedScoreBuild(env: Environment, sp: OT.SessionProps, force: boolean): boolean
@@ -65,6 +65,7 @@ export class FsmFullScoreScan extends FSM.Fsm
       });
 
     // Now invoke this set
+    console.log(`buildscore: toProcess length is ${this.toProcess.length}`);
     this.fsmBuilds = [];
     while (this.toProcess.length > 0 && this.fsmBuilds.length < MaxInParallel)
     {
