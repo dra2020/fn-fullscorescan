@@ -19,7 +19,7 @@ const FSM_QUERYING = UniqueState++;
 const FSM_PROCESSING = UniqueState++;
 const FSM_BUILDING = UniqueState++;
 
-const ScoreVersion = '2';
+const ScoreVersion = '3';
 const MaxInParallel = 400;
 
 function NeedScoreBuild(env: Environment, sp: OT.SessionProps, force: boolean): boolean
