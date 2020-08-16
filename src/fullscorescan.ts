@@ -20,7 +20,7 @@ const FSM_PROCESSING = UniqueState++;
 const FSM_BUILDING = UniqueState++;
 
 const ScoreVersion = '3';
-const MaxInParallel = 400;
+const MaxInParallel = 50;
 
 function NeedScoreBuild(env: Environment, sp: OT.SessionProps, force: boolean): boolean
 {
@@ -129,6 +129,8 @@ export class FsmFullScoreScan extends FSM.Fsm
               let sp: any = spProcess[i];
               if (sp.xprops.state === spMatch.xprops.state && sp.xprops.datasource === spMatch.xprops.datasource)
                 queries.push({ id: sp.id, createdBy: sp.createdBy });
+              else
+                break;
             }
             this.toProcess.push(queries);
           }
